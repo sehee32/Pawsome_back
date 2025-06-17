@@ -68,4 +68,12 @@ public class OrderService {
         cartItemRepository.deleteByUserId(userId);
         return order.getId();
     }
+
+    @Transactional
+    public void detachUserFromOrders(User user) {
+        List<Order> orders = orderRepository.findByUser(user);
+        orders.forEach(order -> order.setUser(null));
+        orderRepository.saveAll(orders);
+    }
+
 }

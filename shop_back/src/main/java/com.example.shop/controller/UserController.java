@@ -64,7 +64,14 @@ public class UserController {
     @DeleteMapping("/me")
     public ResponseEntity<String> deleteMe(@RequestHeader("Authorization") String authHeader) {
         Long userId = getUserId(authHeader);
-        userRepository.deleteById(userId);
+        User user = userRepository.findById(userId).orElseThrow();
+
+        // 1. 주문 데이터 user_id null 처리
+        orderService.detachUserFromOrders(user);
+
+        // 2. 회원 삭제
+        userRepository.delete(user);
+
         return ResponseEntity.ok("회원탈퇴가 완료되었습니다.");
     }
 
