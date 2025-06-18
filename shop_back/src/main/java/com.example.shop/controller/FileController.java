@@ -6,6 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -20,8 +22,14 @@ public class FileController {
             Resource resource = new UrlResource(filePath.toUri());
 
             if (resource.exists() && resource.isReadable()) {
+                // 한글 등 유니코드 파일명 인코딩 (RFC 5987)
+                String encodedFilename = URLEncoder.encode(resource.getFilename(), StandardCharsets.UTF_8)
+                        .replaceAll("\\+", "%20"); // 공백 처리
+
+                String contentDisposition = "inline; filename*=UTF-8''" + encodedFilename;
+
                 return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                         .body(resource);
             } else {
                 return ResponseEntity.status(404).body(null); // 파일 없음 처리
