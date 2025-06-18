@@ -37,4 +37,10 @@ public class AuthController {
         boolean isAdmin = authService.checkAdmin(token);
         return ResponseEntity.ok(isAdmin);
     }
+
+    @GetMapping("/check-email/{email}")
+    public ResponseEntity<Boolean> checkEmail(@PathVariable String email) {
+        boolean exists = authService.isEmailExists(email);
+        return ResponseEntity.ok(exists);
+    }
 }

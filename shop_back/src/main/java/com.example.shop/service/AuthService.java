@@ -21,7 +21,15 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
+    public boolean isEmailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     public void register(RegisterRequestDto registerRequest) {
+        // 회원가입 시 중복 방지
+        if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+            throw new RuntimeException("이미 사용 중인 이메일입니다.");
+        }
         User user = new User();
         user.setUsername(registerRequest.getUsername());
         user.setEmail(registerRequest.getEmail());
