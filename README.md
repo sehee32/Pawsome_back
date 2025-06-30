@@ -8,7 +8,8 @@
 
 - Frontend : React, Axios
 - Backend : Spring Boot, MySQL, JPA, JWT
-
+  
+<br><br><br>
 
 ## 🌟 주요 기능
 
